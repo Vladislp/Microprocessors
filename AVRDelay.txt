@@ -1,0 +1,20 @@
+start:
+	LDI R16,0xFF
+	OUT 0x01, R16
+	OUT 0x02, R16
+
+LDI R19, 5
+loop3:
+
+	LDI R18, 5
+	loop2:
+		
+		LDI R17, 5
+		loop:
+			NOP
+			DEC R17
+		BRNE loop
+		DEC R18
+	BRNE loop2
+	DEC R19
+BRNE loop3
