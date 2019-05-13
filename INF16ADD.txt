@@ -1,0 +1,13 @@
+start:
+	LDI R16, 100
+	LDI R17, 200
+
+	;ADD R16, R17
+	SUB R16, R17
+	;MUL R16, R17
+
+	OUT 0x01, R16
+	infi_loop:
+
+	RJMP infi_loop
+	;RJMP start
