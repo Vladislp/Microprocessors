@@ -1,0 +1,5 @@
+LDI R16, 0b00001000
+OUT DDRA, R16
+OUT PORTA, R16
+infi_loop:
+RJMP infi_loop
