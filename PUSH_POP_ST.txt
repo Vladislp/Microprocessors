@@ -1,0 +1,20 @@
+start:
+	LDI R16, 0xFF 
+	OUT SPL, R16
+	LDI R16, 0x10
+	OUT SPH, R16
+	;PUSH vahendab SP, POP suurendab SP. Push kirjutab stacki sisse vaartuse. Pop tahab saada tagasi vaartuse, mis on stacki koige uleval.
+	;Peale iga iteratsiooni SP ei ole sama
+	;SP muutub kogu aeg
+	;Kui on palju push, siis SP kogu aeg vaheneb uhevorra ( Kui pole pop )
+	;Kui on palju pop, siis SP kogu aeg suureneb uhevorra ( Kui pole push )
+
+	tsukkel:
+		LDI R16, 10
+		PUSH R16
+		POP R16
+		PUSH R16
+		POP R16
+		PUSH R16
+		PUSH R16
+	RJMP tsukkel
