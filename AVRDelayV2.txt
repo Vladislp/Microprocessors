@@ -1,0 +1,22 @@
+start:
+	LDI R16,0xFF
+	OUT 0x01, R16
+	OUT 0x02, R16
+
+	LDI R19, 71
+	loop3:
+
+		LDI R18, 28
+		loop2:
+
+			LDI R17, 100
+			loop:
+				DEC R17
+				NOP
+				NOP
+			BRNE loop
+			DEC R18
+		BRNE loop2
+		DEC R19
+	BRNE loop3
+RJMP start
