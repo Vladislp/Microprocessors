@@ -1,0 +1,18 @@
+;
+; Vladislav.asm
+;
+; Created: 26.02.2019 12:24:29
+; Author : Kasutaja
+;
+Ulesanne 1
+start:
+	LDI R16,0xfF ; Laadib registrisse R16 , arvu 0xFF ( NB! Viga oli selles, et 0xFF = 255, aga ьlesanne oli 0 kuni 255 oli vaja panna 0x00)
+	OUT 0x01, R16 ; Kirjutame 0x01 ( DDRA ) 'Vaata dokument...' vддrtust registrist
+	OUT 0x02, R16
+	loop:
+		NOP ; Ei tee mitte midagi
+		NOP
+	  INC R16 ; Suurendab vддrtust	
+	BRNE loop ; On olemas 'Zero Flag', kui tema on 1, siis ta lдheb edasi
+		   ; loopi sees toimub INC ( suurendab )
+RJMP start ; hьppab meie start funktsiooni
