@@ -1,0 +1,34 @@
+Stack INIT
+	LDI R16, 0xFF ( LOW )
+	OUT SPL, R16
+	LDI R16, 0x10 ( HIGH )
+	OUT SPH, R16
+---------------------
+Timer INIT
+	LDI R16, 1 << CS10
+	OUT TCCR1B, R16
+	LDI R16, 1 << TOIE1
+	OUT TIMSKI, R16
+
+	LDI R17, 0b00000001
+	OUT TCCR0B, R17
+---------------------
+PORTA INIT
+	LDI R16, 0xFF
+	OUT DDRA, R16
+--------------------
+USART_Init:
+		; Set baud rate ( 9600 )
+		LDI R16, 0x25
+		OUT UBRR2, R16
+		; Set Parity ( No parity )
+		LDI R16, 0b00000000
+		STS UCSR2C, R16
+		; Set frame format: 8data, 1stop bit
+		LDI R16, 0b00000110
+		STS UCSR2C,R16
+		; Enable transmitter/ TX saatmis
+		LDI R16, 0b00001001
+		STS UCSR2B , R16
+	RET
+-----------------------

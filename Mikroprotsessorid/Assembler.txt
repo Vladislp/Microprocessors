@@ -1,0 +1,126 @@
+;
+; Vladislav.asm
+;
+; Created: 26.02.2019 12:24:29
+; Author : Kasutaja
+;
+Ulesanne 1
+;start:
+	;LDI R16,0xfF ; Laadib registrisse R16 , arvu 0xFF ( NB! Viga oli selles, et 0xFF = 255, aga ülesanne oli 0 kuni 255 oli vaja panna 0x00)
+	;OUT 0x01, R16 ; Kirjutame 0x01 ( DDRA ) 'Vaata dokument...' väärtust registrist
+	;OUT 0x02, R16
+	;loop:
+		;NOP ; Ei tee mitte midagi
+		;NOP
+		;INC R16 ; Suurendab väärtust	
+	;BRNE loop ; On olemas 'Zero Flag', kui tema on 1, siis ta läheb edasi
+		   ; loopi sees toimub INC ( suurendab )
+;RJMP start ; hüppab meie start funktsiooni
+;----------------------------------------------------------
+Ulesanne 3
+
+;LDI R16, 0b00001000
+;OUT DDRA, R16
+;OUT PORTA, R16
+;infi_loop:
+;RJMP infi_loop
+
+;-----------------------------------------------------------
+Ulesanne 4
+;start:
+	;LDI R16,0xFF
+	;OUT 0x01, R16
+	;OUT 0x02, R16
+
+;LDI R19, 5
+;loop3:
+
+	;LDI R18, 5
+	;loop2:
+		
+		;LDI R17, 5
+		;loop:
+			;NOP
+			;DEC R17
+		;BRNE loop
+		;DEC R18
+	;BRNE loop2
+	;DEC R19
+;BRNE loop3
+;------------------------
+start:
+	LDI R16,0xFF
+	OUT 0x01, R16
+	OUT 0x02, R16
+
+	LDI R19, 71
+	loop3:
+
+		LDI R18, 28
+		loop2:
+
+			LDI R17, 100
+			loop:
+				DEC R17
+				NOP
+				NOP
+			BRNE loop
+			DEC R18
+		BRNE loop2
+		DEC R19
+	BRNE loop3
+RJMP start
+;-----------------------------------------
+Ulesanne 5
+start:
+	LDI R16, 100
+	LDI R17, 200
+
+	;ADD R16, R17
+	SUB R16, R17
+	;MUL R16, R17
+
+	OUT 0x01, R16
+	infi_loop:
+
+	RJMP infi_loop
+	;RJMP start
+;-----------------------------------------
+Ulesanne 6
+
+
+start:
+    LDI R16, 0b01000000
+    OUT 0x04, R16
+
+	loop:
+		NOP
+		LDI R16, 0b0000000
+		NOP
+		NOP
+		LDI R16, 0b01000000
+
+----------------------------------------------------
+; Replace with your application code
+start:
+    LDI R16, 0b01000000
+	OUT 0x04, R16
+	LDI R16, 0b00000000
+	OUT 0x04, R16
+	loop:
+		NOP
+		NOP
+		INC R16
+	BRNE loop
+RJMP start
+
+	Main:
+		INC R16
+		loop_del:
+			NOP
+			NOP
+			NOP
+			NOP
+			DEC R16
+		BRNE loop_del
+RJMP Main

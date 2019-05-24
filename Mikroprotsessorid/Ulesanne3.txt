@@ -1,0 +1,263 @@
+﻿NB! o1, o2, o3 initsialiseerimise asjad on samad iga kord.
+
+
+((((((O1))))))
+EOR R1, R1 --> Iga kord kui programm lдheb tццle, ta salvestab kogu aeg registris R1 vддrtuse 0. Selleks et vхik seda kasutada, kui oleks vaja vддrtust 0
+OUT 0x3F, R1 --> Kirjutab registri R1 ( Vддrtus on kogu aeg 0 ), aadressile ("0x3F" ehk Status Register), kas paneb kхik lippud 0 seisu ? STACK START Init ?
+LDI R28, 0xFF --> Pannakse vддrtuse     -->
+LDI R29, 0x21 --> Pannakse vддrtuse	--> STACK
+OUT 0x3E, R29 --> Kirjutakse vддrtuse   --> INIT
+OUT 0x3D, R28 --> Kirjutakse vддrtuse   -->
+
+LDI R17, 0x02 --> Pannakse vддrtuse
+LDI R26, 0x00 --> Pannakse vддrtuse
+LDI R27, 0x02 --> Pannakse vддrtuse
+LDI R30, 0x1C --> Pannakse vддrtuse
+LDI R31, 0x02 --> Pannakse vддrtuse
+LDI R16, 0x00 --> Pannakse vддrtuse = 0
+OUT 0x3B, R16 --> Kirjutatakse vддrtuse R16, aadressile ("0x3B" ehk RAMPZ). RAMPZ ? ... seletada.
+RJMP .+4      --> Peamiselt siin toimub mingisuguse muutujate initsialiseerimine, et meil on olemas RAM ja FLASH.
+ELPM R0, Z+   --> RAM paneb paika kхik muutujad, mis on vдrtustega ьks teise alla ja saadab seda ьhe tervikuna seda FLASH mдlu sisse      
+ST X+, R0     --> RAM jдttab ja panneb kirja oma sisse kхik muutujad mis on ilma mingid vддrtusena. Ta paneb neid all pool selle ploki, kus on vддrtused.
+CPI R26, 0x00 --> Selleks, et anda vхimalust progejale vхimalust kasutada neid, toimub sama asi FLASH mдlu sees.
+CPC R27, R17  --> 
+BRNE .-10     --> 
+RCALL .+52 --> Hakkakse kдima panema "main" module.
+RJMP .+266 --> Vдljastatakse " kхikide asjade initsialiseerimesest "
+
+const uint16_t n = 500; // Defineeritakse konstandi, mis kasutab muutujad n uint16_t tььpi ( 16 bit );
+
+// Tehakse sellist delay funktsiooni, mis peab ootama kogu aeg 0.5 sekundid;
+void delay(uint16_t n) {
+	for(uint16_t i = 0; i<n; i++) {
+ 110:	00 97       	sbiw	r24, 0x00	; 0 |||--> Kuna (uint16_t = 0) ta lahutab registris olevat väärtust ( 0 ) arvuga 0x00 ( 0 ) 
+ 112:	79 f4       	brne	.+30     	; 0x132 <delay+0x22> |||--> Vaatab kas on võrdne nulliga
+ 114:	08 95       	ret ||| --> Mis mängib "CALL" rolli ? Ei tea kuhu ta peaks täpselt "Return aadress" minna.
+	...
+		for(uint16_t j = 0; j<200; j++) {
+			asm volatile ("NOP"); // Use"NOP" kдsku, mis oli ASM-is ... mitte midagi ei toimu;
+			asm volatile ("NOP"); // Use "NOP" kдsku, mis oli ASM-is ... mitte midagi ei toimu;
+			asm volatile ("NOP"); // Use "NOP" kдsku, mis oli ASM-is ... mitte midagi ei toimu;
+			asm volatile ("NOP"); // Use "NOP" kдsku, mis oli ASM-is ... mitte midagi ei toimu;
+			asm volatile ("NOP"); // Use "NOP" kдsku, mis oli ASM-is ... mitte midagi ei toimu;
+ 11e:	00 00       	nop
+ 120:	21 50       	subi	r18, 0x01	; 1 |||--> Kas ta iga for paneb eraldi registrisee, ja lahutab seal ühe kuna "For Tsükkel" ?
+ 122:	31 09       	sbc	r19, r1 ||| --> Miks ta lahutab kaht registri, mis ei mängi päriselt mingid rolli ?
+const uint16_t n = 500; // Defineeritakse konstandi, mis kasutab muutujad n uint16_t tььpi ( 16 bit );
+
+// Tehakse sellist delay funktsiooni, mis peab ootama kogu aeg 0.5 sekundid;
+void delay(uint16_t n) {
+	for(uint16_t i = 0; i<n; i++) {
+		for(uint16_t j = 0; j<200; j++) {
+ 124:	c1 f7       	brne	.-16     	; 0x116 <delay+0x6> ||| --> "For" tsükklis võrdlemine arvuga
+
+const uint16_t n = 500; // Defineeritakse konstandi, mis kasutab muutujad n uint16_t tььpi ( 16 bit );
+
+// Tehakse sellist delay funktsiooni, mis peab ootama kogu aeg 0.5 sekundid;
+void delay(uint16_t n) {
+	for(uint16_t i = 0; i<n; i++) {
+ 126:	4f 5f       	subi	r20, 0xFF	; 255
+ 128:	5f 4f       	sbci	r21, 0xFF	; 255
+ 12a:	48 17       	cp	r20, r24
+ 12c:	59 07       	cpc	r21, r25
+ 12e:	29 f4       	brne	.+10     	; 0x13a <delay+0x2a>
+ 130:	08 95       	ret
+ 132:	40 e0       	ldi	r20, 0x00	; 0
+ 134:	50 e0       	ldi	r21, 0x00	; 0
+#include <util/delay.h> // Defineeritakse _delay(n) kдsku funktsionaalsust;
+
+const uint16_t n = 500; // Defineeritakse konstandi, mis kasutab muutujad n uint16_t tььpi ( 16 bit );
+
+// Tehakse sellist delay funktsiooni, mis peab ootama kogu aeg 0.5 sekundid;
+void delay(uint16_t n) {
+ 136:	78 ec       	ldi	r23, 0xC8	; 200
+ 138:	60 e0       	ldi	r22, 0x00	; 0
+ 13a:	27 2f       	mov	r18, r23
+ 13c:	36 2f       	mov	r19, r22
+ 13e:	eb cf       	rjmp	.-42     	; 0x116 <delay+0x6>
+
+00000140 <main>:
+		
+	}
+}
+
+int main(void) {
+	DDRA = 0xFF;
+ 140:	8f ef       	ldi	r24, 0xFF	; 255
+ 142:	81 b9       	out	0x01, r24	; 1
+	PORTA = 0x20;
+ 144:	80 e2       	ldi	r24, 0x20	; 32
+ 146:	82 b9       	out	0x02, r24	; 2
+	while (1) {
+		PORTA = 0b0010000; // LED ON
+ 148:	c0 e1       	ldi	r28, 0x10	; 16
+ 14a:	c2 b9       	out	0x02, r28	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 14c:	84 ef       	ldi	r24, 0xF4	; 244
+ 14e:	91 e0       	ldi	r25, 0x01	; 1
+ 150:	df df       	rcall	.-66     	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		PORTA = 0b0000000; // LED OFF
+ 152:	12 b8       	out	0x02, r1	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 154:	84 ef       	ldi	r24, 0xF4	; 244
+ 156:	91 e0       	ldi	r25, 0x01	; 1
+ 158:	db df       	rcall	.-74     	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		
+		PORTA = 0b0010000; // LED ON
+ 15a:	c2 b9       	out	0x02, r28	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 15c:	84 ef       	ldi	r24, 0xF4	; 244
+ 15e:	91 e0       	ldi	r25, 0x01	; 1
+ 160:	d7 df       	rcall	.-82     	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		PORTA = 0b0000000; // LED OFF
+ 162:	12 b8       	out	0x02, r1	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 164:	84 ef       	ldi	r24, 0xF4	; 244
+ 166:	91 e0       	ldi	r25, 0x01	; 1
+ 168:	d3 df       	rcall	.-90     	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		
+		PORTA = 0b0010000; // LED ON
+ 16a:	c2 b9       	out	0x02, r28	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 16c:	84 ef       	ldi	r24, 0xF4	; 244
+ 16e:	91 e0       	ldi	r25, 0x01	; 1
+ 170:	cf df       	rcall	.-98     	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		PORTA = 0b0000000; // LED OFF
+ 172:	12 b8       	out	0x02, r1	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 174:	84 ef       	ldi	r24, 0xF4	; 244
+ 176:	91 e0       	ldi	r25, 0x01	; 1
+ 178:	cb df       	rcall	.-106    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		
+		delay(n); // Kasutame delay funktsiooni;
+ 17a:	84 ef       	ldi	r24, 0xF4	; 244
+ 17c:	91 e0       	ldi	r25, 0x01	; 1
+ 17e:	c8 df       	rcall	.-112    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		delay(n); // Kasutame delay funktsiooni;
+ 180:	84 ef       	ldi	r24, 0xF4	; 244
+ 182:	91 e0       	ldi	r25, 0x01	; 1
+ 184:	c5 df       	rcall	.-118    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		
+		PORTA = 0b0010000; // LED ON
+ 186:	c2 b9       	out	0x02, r28	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 188:	84 ef       	ldi	r24, 0xF4	; 244
+ 18a:	91 e0       	ldi	r25, 0x01	; 1
+ 18c:	c1 df       	rcall	.-126    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		delay(n); // Kasutame delay funktsiooni;
+ 18e:	84 ef       	ldi	r24, 0xF4	; 244
+ 190:	91 e0       	ldi	r25, 0x01	; 1
+ 192:	be df       	rcall	.-132    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		delay(n); // Kasutame delay funktsiooni;
+ 194:	84 ef       	ldi	r24, 0xF4	; 244
+ 196:	91 e0       	ldi	r25, 0x01	; 1
+ 198:	bb df       	rcall	.-138    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		PORTA = 0b0000000; // LED OFF
+ 19a:	12 b8       	out	0x02, r1	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 19c:	84 ef       	ldi	r24, 0xF4	; 244
+ 19e:	91 e0       	ldi	r25, 0x01	; 1
+ 1a0:	b7 df       	rcall	.-146    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		
+		PORTA = 0b0010000; // LED ON
+ 1a2:	c2 b9       	out	0x02, r28	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 1a4:	84 ef       	ldi	r24, 0xF4	; 244
+ 1a6:	91 e0       	ldi	r25, 0x01	; 1
+ 1a8:	b3 df       	rcall	.-154    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		delay(n); // Kasutame delay funktsiooni;
+ 1aa:	84 ef       	ldi	r24, 0xF4	; 244
+ 1ac:	91 e0       	ldi	r25, 0x01	; 1
+ 1ae:	b0 df       	rcall	.-160    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		delay(n); // Kasutame delay funktsiooni;
+ 1b0:	84 ef       	ldi	r24, 0xF4	; 244
+ 1b2:	91 e0       	ldi	r25, 0x01	; 1
+ 1b4:	ad df       	rcall	.-166    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		PORTA = 0b0000000; // LED OFF
+ 1b6:	12 b8       	out	0x02, r1	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 1b8:	84 ef       	ldi	r24, 0xF4	; 244
+ 1ba:	91 e0       	ldi	r25, 0x01	; 1
+ 1bc:	a9 df       	rcall	.-174    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		
+		PORTA = 0b0010000; // LED ON
+ 1be:	c2 b9       	out	0x02, r28	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 1c0:	84 ef       	ldi	r24, 0xF4	; 244
+ 1c2:	91 e0       	ldi	r25, 0x01	; 1
+ 1c4:	a5 df       	rcall	.-182    	; 0x110 <delay> ||| Salvestab Stacki peale ja vähendab seda ühe võrra. Relative Call to Subroutine. Konstant, mis peaks olema kõige alguses.
+		delay(n); // Kasutame delay funktsiooni;
+ 1c6:	84 ef       	ldi	r24, 0xF4	; 244
+ 1c8:	91 e0       	ldi	r25, 0x01	; 1
+ 1ca:	a2 df       	rcall	.-188    	; 0x110 <delay>
+		delay(n); // Kasutame delay funktsiooni;
+ 1cc:	84 ef       	ldi	r24, 0xF4	; 244
+ 1ce:	91 e0       	ldi	r25, 0x01	; 1
+ 1d0:	9f df       	rcall	.-194    	; 0x110 <delay>
+		PORTA = 0b0000000; // LED OFF
+ 1d2:	12 b8       	out	0x02, r1	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 1d4:	84 ef       	ldi	r24, 0xF4	; 244
+ 1d6:	91 e0       	ldi	r25, 0x01	; 1
+ 1d8:	9b df       	rcall	.-202    	; 0x110 <delay>
+		
+		delay(n);
+ 1da:	84 ef       	ldi	r24, 0xF4	; 244
+ 1dc:	91 e0       	ldi	r25, 0x01	; 1
+ 1de:	98 df       	rcall	.-208    	; 0x110 <delay>
+		delay(n);
+ 1e0:	84 ef       	ldi	r24, 0xF4	; 244
+ 1e2:	91 e0       	ldi	r25, 0x01	; 1
+ 1e4:	95 df       	rcall	.-214    	; 0x110 <delay>
+		
+		PORTA = 0b0010000; // LED ON
+ 1e6:	c2 b9       	out	0x02, r28	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 1e8:	84 ef       	ldi	r24, 0xF4	; 244
+ 1ea:	91 e0       	ldi	r25, 0x01	; 1
+ 1ec:	91 df       	rcall	.-222    	; 0x110 <delay>
+		PORTA = 0b0000000; // LED OFF
+ 1ee:	12 b8       	out	0x02, r1	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 1f0:	84 ef       	ldi	r24, 0xF4	; 244
+ 1f2:	91 e0       	ldi	r25, 0x01	; 1
+ 1f4:	8d df       	rcall	.-230    	; 0x110 <delay>
+		
+		PORTA = 0b0010000; // LED ON
+ 1f6:	c2 b9       	out	0x02, r28	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 1f8:	84 ef       	ldi	r24, 0xF4	; 244
+ 1fa:	91 e0       	ldi	r25, 0x01	; 1
+ 1fc:	89 df       	rcall	.-238    	; 0x110 <delay>
+		PORTA = 0b0000000; // LED OFF
+ 1fe:	12 b8       	out	0x02, r1	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 200:	84 ef       	ldi	r24, 0xF4	; 244
+ 202:	91 e0       	ldi	r25, 0x01	; 1
+ 204:	85 df       	rcall	.-246    	; 0x110 <delay>
+		
+		PORTA = 0b0010000; // LED ON
+ 206:	c2 b9       	out	0x02, r28	; 2
+		delay(n); // Kasutame delay funktsiooni;
+ 208:	84 ef       	ldi	r24, 0xF4	; 244
+ 20a:	91 e0       	ldi	r25, 0x01	; 1
+ 20c:	81 df       	rcall	.-254    	; 0x110 <delay>
+		PORTA = 0b0000000; // LED OFF
+ 20e:	12 b8       	out	0x02, r1	; 2
+		delay(n*7); // Kasutame delay funktsiooni;
+ 210:	8c ea       	ldi	r24, 0xAC	; 172
+ 212:	9d e0       	ldi	r25, 0x0D	; 13
+ 214:	7d df       	rcall	.-262    	; 0x110 <delay>
+		
+		// delay(6);
+		// delay(n*6)
+	}
+ 216:	99 cf       	rjmp	.-206    	; 0x14a <main+0xa> ||| Läheb main-ist välja ?
+
+00000218 <_exit>:
+ 218:	f8 94       	cli ||| Lülitab "Global Interrupt Flag" välja, selleks et stackiga poleks probleemi.
+
+0000021a <__stop_program>:
+ 21a:	ff cf       	rjmp	.-2      	; 0x21a <__stop_program> ||| Hüppab katkesus vectorili , mis lülitab programmi välja,
+
+

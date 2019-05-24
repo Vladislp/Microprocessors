@@ -1,0 +1,38 @@
+﻿Katkestused
+
+Iga seade ise annavad tuumale märku kui on toimunud mingi tähtis sündmus.
+------------------
+Kui seadmel toimub mingi sündmus, paneb see vastu lipu püsti.
+------------------
+Selle peale CPU automaatselt peatub põhilise programmi täitmist ja käivitab protseduuri mis oskab sellega tegeleda.
+------------------
+Selleks et käivitada katkestuse teenindamiseks kindlat rutiini peab CPU teadma kus ee asub.
+------------------
+datasheet 68
+------------------
+Juhul kui me KASUTAME katkestusi, siis antud aadressiltel PEAVAD olema instruktsioonid kujul ( JMP, aadresss )
+------------------
+Interrupt handler
+Iga katkestust teenindav rutiin PEAM lõppema instruktsuiinuga RETI ( Mitte mingil juhul RET )
+
+JMP PROGRAM_START
+
+.org 0x36
+
+JMP UART_TX_HANDLER
+
+.org 0x4c
+PROGRAM_START:
+	INIT ( Stack, uart , interupt, ... )
+UART_TX_HANDLER:
+	UART -> Interrupt Handler
+RETI
+-----------------------------
+SEI - Set Enable Interrupt
+CLI - Clear Enable Interrupt
+-----------------------------
+RETI erineb RETst selle poolest et RETI lisaks huppamine kaskestusest välja, paneb veel GIE lipu tagasti pusti.
+------------------------------
+Ainult üks katkestus
+------------------------------
+RETI peab salvestama iga registri väärtused, mida ta muutis.

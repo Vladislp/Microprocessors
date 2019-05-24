@@ -1,0 +1,170 @@
+/*
+ * GccApplication1.c
+ *
+ * Created: 23.04.2019 13:25:17
+ * Author : Ximaks
+ * Practical: 1
+ * Exercise: 1
+ */ 
+#define F_CPU 2000000
+#include <avr/io.h>
+#include <util/delay.h>
+
+
+int main(void) {
+	DDRA = 0xFF;
+    PORTA = 0x20;
+    while (1) {
+		PORTA ^=0x20;
+		_delay_ms(100);
+    }
+}
+----------------------------------------------
+/*
+ * GccApplication1.c
+ *
+ * Created: 23.04.2019 13:25:17
+ * Practical: 1
+ * Exercise: 2
+ */ 
+#define F_CPU 2000000 // Defineerime arvuti sagedust;
+#include <avr/io.h> // On defineeritud igal programmil;
+#include <util/delay.h> // Defineeritakse _delay(n) käsku funktsionaalsust;
+
+const uint16_t n = 500; // Defineeritakse konstandi, mis kasutab muutujad n uint16_t tüüpi ( 16 bit );
+
+// Tehakse sellist delay funktsiooni, mis peab ootama kogu aeg 0.5 sekundid;
+void delay(uint16_t n) { 
+	for(uint16_t i = 0; i<n; i++) { 
+		for(uint16_t j = 0; j<200; j++) {
+			asm volatile ("NOP"); // Use"NOP" käsku, mis oli ASM-is ... mitte midagi ei toimu;
+			asm volatile ("NOP"); // Use "NOP" käsku, mis oli ASM-is ... mitte midagi ei toimu;
+			asm volatile ("NOP"); // Use "NOP" käsku, mis oli ASM-is ... mitte midagi ei toimu;
+			asm volatile ("NOP"); // Use "NOP" käsku, mis oli ASM-is ... mitte midagi ei toimu;
+			asm volatile ("NOP"); // Use "NOP" käsku, mis oli ASM-is ... mitte midagi ei toimu;
+		}
+		
+	}
+}
+
+int main(void) {
+	DDRA = 0xFF;
+    PORTA = 0x20;
+    while (1) {
+		PORTA = 0b0010000; // LED ON
+		delay(n); // Kasutame delay funktsiooni;
+		PORTA = 0b0000000; // LED OFF
+		delay(n); // Kasutame delay funktsiooni;
+		
+		PORTA = 0b0010000; // LED ON
+		delay(n); // Kasutame delay funktsiooni;
+		PORTA = 0b0000000; // LED OFF
+		delay(n); // Kasutame delay funktsiooni;
+		
+		PORTA = 0b0010000; // LED ON
+		delay(n); // Kasutame delay funktsiooni;
+		PORTA = 0b0000000; // LED OFF
+		delay(n); // Kasutame delay funktsiooni;
+		
+		delay(n); // Kasutame delay funktsiooni;
+		delay(n); // Kasutame delay funktsiooni;
+		
+		PORTA = 0b0010000; // LED ON
+		delay(n); // Kasutame delay funktsiooni;
+		delay(n); // Kasutame delay funktsiooni;
+		delay(n); // Kasutame delay funktsiooni;
+		PORTA = 0b0000000; // LED OFF
+		delay(n); // Kasutame delay funktsiooni;
+		
+		PORTA = 0b0010000; // LED ON
+		delay(n); // Kasutame delay funktsiooni;
+		delay(n); // Kasutame delay funktsiooni;
+		delay(n); // Kasutame delay funktsiooni;
+		PORTA = 0b0000000; // LED OFF
+		delay(n); // Kasutame delay funktsiooni;
+		
+		PORTA = 0b0010000; // LED ON
+		delay(n); // Kasutame delay funktsiooni;
+		delay(n); // Kasutame delay funktsiooni;
+		delay(n); // Kasutame delay funktsiooni;
+		PORTA = 0b0000000; // LED OFF
+		delay(n); // Kasutame delay funktsiooni;
+		
+		delay(n);
+		delay(n);
+		
+		PORTA = 0b0010000; // LED ON
+		delay(n); // Kasutame delay funktsiooni;
+		PORTA = 0b0000000; // LED OFF
+		delay(n); // Kasutame delay funktsiooni;
+		
+		PORTA = 0b0010000; // LED ON
+		delay(n); // Kasutame delay funktsiooni;
+		PORTA = 0b0000000; // LED OFF
+		delay(n); // Kasutame delay funktsiooni;
+		
+		PORTA = 0b0010000; // LED ON
+		delay(n); // Kasutame delay funktsiooni;
+		PORTA = 0b0000000; // LED OFF
+		delay(n*7); // Kasutame delay funktsiooni;
+		
+		// delay(6);
+		// delay(n*6)
+    }
+}
+
+
+
+-----------------------------------------------
+/*
+ * GccApplication1.c
+ *
+ * Created: 23.04.2019 13:25:17
+ * Author : Ximaks
+ * Practical: 1
+ * Exercise: 3
+ */ 
+a) Katkestuste tabel 
+	
+
+-----------------------------------------------
+
+/*
+ * GccApplication1.c
+ *
+ * Created: 23.04.2019 13:25:17
+ * Author : Ximaks
+ * Practical: 1
+ * Exercise: 4
+ */ 
+
+----------------------------------------------
+
+/*
+ * GccApplication1.c
+ *
+ * Created: 23.04.2019 13:25:17
+ * Author : Ximaks
+ * Practical: 1
+ * Exercise: 5
+ */ 
+
+int main(void) {
+	MCUCR |= 0x80;
+	MCUCR |= 0x80;
+	DDRA = 0x01;
+	PORTF = 0x20;
+	
+	while(1)
+	{
+		uint8_t x = PINF;
+		if(!(x & 0x20))
+		{
+			PORTA = 0x01;
+		}
+		
+		else {
+		     PORTA = 0x00;
+		}
+	}
+}

@@ -1,0 +1,657 @@
+﻿start:
+    LDI R16, 0b01000000
+	OUT 0x04, R16
+
+	loop:
+		NOP
+		LDI R16, 0b0000000
+		NOP
+		NOP
+		LDI R16, 0b01000000
+
+----------------------------------------------------
+; Replace with your application code
+start:
+    LDI R16, 0b01000000
+	OUT 0x04, R16
+	LDI R16, 0b00000000
+	OUT 0x04, R16
+	loop:
+		NOP
+		NOP
+		INC R16
+	BRNE loop
+RJMP start
+
+	Main:
+		INC R16
+		loop_del:
+			NOP
+			NOP
+			NOP
+			NOP
+			DEC R16
+		BRNE loop_del
+RJMP Main
+----------------------------------- 
+Teine praktikum
+Ulesanne 1
+
+start:
+	LDI R16, 0xFF 
+	OUT SPL, R16
+	LDI R16, 0x10
+	OUT SPH, R16
+	;PUSH vahendab SP, POP suurendab SP. Push kirjutab stacki sisse vaartuse. Pop tahab saada tagasi vaartuse, mis on stacki koige uleval.
+	;Peale iga iteratsiooni SP ei ole sama
+	;SP muutub kogu aeg
+	;Kui on palju push, siis SP kogu aeg vaheneb uhevorra ( Kui pole pop )
+	;Kui on palju pop, siis SP kogu aeg suureneb uhevorra ( Kui pole push )
+
+	tsukkel:
+		LDI R16, 10
+		PUSH R16
+		POP R16
+		PUSH R16
+		POP R16
+		PUSH R16
+		PUSH R16
+	RJMP tsukkel
+---------------------------------
+Ulesanne 2
+
+start:
+	LDI R16, 0xFF
+	OUT SPL, R16
+	LDU R16, 0x10
+	OUT SPH, R16
+
+	LDI R17, 10
+	LDI R18, 20
+	PUSH R17
+	PUSH R18
+	POP R17
+	POP R18
+	NOP
+---------------------------------
+Ulesanne 3
+
+start:
+	LDI R16, 0xFF
+	OUT SPL, R16
+	LDI R16, 0x10
+	OUT SPH, R16
+Tsykkel:
+	LDI R16, 10
+	OUT 0x05, R16
+	CALL SimpleProc ;Peamiselt sama mis RJMP, aga ta salvestab stacki 			sisse aadressi, kuhu ta huppab.
+SimpleProc:
+	NOP
+RET ; 		RET - Votab stackist tagasipoordumise aadressi, mida sinna 		salvestas CALL, ja RJMP sinna... valjudes protseduurist
+----------------------------------
+Ulesanne 4
+
+start:
+	LDI R16, 0xFF
+	OUT SPL, R16
+	LDI R16, 0x10
+	OUT SPH, R16
+Tsykkel:
+	LDI R16, 10;RET teeb suuremaks SP, kahe vorra
+	OUT 0x05, R16 ;Call teeb vaiksem SP, kahe vorra
+	CALL SimpleProc
+	CALL SmarterProcedure
+RJMP Tsykkel 	;Peamiselt sama mis RJMP, aga ta salvestab stacki sisse 		aadressi, kuhu ta huppab.
+SimpleProc:
+	NOP
+RET 		; RET - Votab stackist tagasipoordumise aadressi, mida sinna 		salvestas CALL, ja RJMP sinna... valjudes protseduurist
+SmarterProcedure:
+	CALL SimpleProc
+	CALL SimpleProc
+RET
+---------------------------------
+Ulesanne 5
+
+start:
+	LDI R16, 0xFF
+	OUT SPL, R16 ;PORTA
+	LDI R16, 0x10
+	OUT SPH, R16
+
+	LDI R17, 0b0010000
+	LDI R18, 0b0000000
+	OUT 0x01, R17
+
+
+PeaTsykkel:
+	OUT 0x02, R17
+	CALL delay
+	OUT 0x02, R18
+	CALL delay
+
+	LDI 0x02, R17
+	CALL delay
+	OUT 0x02, R18
+	CALL delay
+
+	OUT 0x02, R17
+	CALL delay
+	OUT 0x02, R18
+	CALL delay
+
+	;----------
+
+	CALL delay	
+	CALL delay
+	;----------
+
+	OUT 0x02, R17
+	CALL delay
+	CALL delay
+	CALL delay
+	OUT 0x02, R18
+	CALL delay
+	OUT 0x02, R17
+	CALL delay
+	CALL delay
+	CALL delay
+	OUT 0x02, R18
+	CALL delay
+	OUT 0x02, R17
+	CALL delay
+	CALL delay
+	CALL delay
+	OUT 0x02, R18
+	CALL delay
+	;----------
+
+	CALL delay	
+	CALL delay	
+	;----------
+
+	OUT 0x02, R17
+	CALL delay
+	OUT 0x02, R18
+	CALL delay
+	OUT 0x02, R17
+	CALL delay
+	OUT 0x02, R18
+	CALL delay
+	OUT 0x02, R17
+	CALL delay
+	OUT 0x02, R18
+	CALL delay	
+	;------------	
+	CALL delay	
+	CALL delay	
+	CALL delay	
+	CALL delay	
+	CALL delay	
+	CALL delay	
+	;-----------	
+	RJMP PeaTsykkel
+	
+delay:
+	LDI R19, 71
+	loop3:
+
+		LDI R18, 28
+		loop2:
+
+			LDI R17, 100
+			loop:
+				DEC R17
+				NOP
+				NOP
+			BRNE loop
+			DEC R18
+		BRNE loop2
+		DEC R19
+	BRNE loop3
+
+RET
+------------------------------
+Ulesanne 6
+
+LDI R16, 0xff
+OUT SPL, R16  
+LDI R16, 0x10
+OUT SPH, R16
+
+LDI R18, 0x00
+LDI R19, 0xff
+
+OUT 0x02, R18 ; PORTA
+OUT 0x01, R19 ; DDRA
+
+
+Tsykkel:
+	CALL Fire; ON
+	LDI R16, low(500)
+	LDI R17, high(500)
+	CALL Delay
+	CALL Fire; OFF
+
+	LDI R16, low(500)
+	LDI R17, high(500)
+	CALL Delay
+	
+	CALL Fire; ON
+	LDI R16, low(500)
+	LDI R17, high(500)
+	CALL Delay
+	CALL Fire; OFF
+	
+	LDI R16, low(500)
+	LDI R17, high(500)
+	CALL Delay
+
+	CALL Fire; ON
+	LDI R16, low(500)
+	LDI R17, high(500)
+	CALL Delay
+	CALL Fire; OFF
+	
+	LDI R16, low(1000)
+	LDI R17, high(1000)
+	CALL Delay
+
+	call Fire; ON
+	LDI R16, low(1000)
+	LDI R17, high(1000)
+	call Delay
+	call Fire; OFF
+
+	LDI R16, low(500)
+	LDI R17, high(500)
+	call Delay
+
+	call Fire; ON
+	LDI R16, low(1000)
+	LDI R17, high(1000)
+	call Delay
+	call Fire; OFF
+
+	LDI R16, low(500)
+	LDI R17, high(500)
+	call Delay
+
+	call Fire; ON
+	LDI R16, low(1500)
+	LDI R17, high(1500)
+	call Delay
+	call Fire; OFF
+
+	LDI R16, low(1500)
+	LDI R17, high(1500)
+	call Delay
+
+	call Fire; ON
+	LDI R16, low(500)
+	LDI R17, high(500)
+	call Delay
+	call Fire; OFF
+
+	LDI R16, low(500)
+	LDI R17, high(500)
+	call Delay
+
+	call Fire; ON
+	LDI R16, low(500)
+	LDI R17, high(500)
+	call Delay
+	call Fire; OFF
+
+	LDI R16, low(500)
+	LDI R17, high(500)
+	call Delay
+
+	call Fire; ON
+	LDI R16, low(500)
+	LDI R17, high(500)
+	call Delay
+	call Fire; OFF
+
+	LDI R16, low(1500)
+	LDI R17, high(1500)
+	call Delay
+
+	rjmp Tsykkel
+
+Fire:
+	EOR R18, R19 ; Tagastab R18 vддrtust ( R18 = R19 )
+	OUT 0x02, R18
+	RET ; Hьppab ьhe kдsu edasi, pдrast CALL ( Rida 15 )
+
+Delay:
+	PUSH R16 ; Push kirjutab stacki sisse , vдhendab ьhe vхrra
+	PUSH R17 ; Push kirjutab stacki sisse , vдhendab ьhe vхrra
+
+	ring:
+		CALL delay_1ms ; Kutsume vдlja delay_1ms function
+		SUBI R16, 1 ; Lahutab(-) R16 vддrtust konstandiga (1)
+		SBCI r17, 0 ; Lahutab(-) R17 vддrtust konstandiga (0) ja lahutab veel "C-FLAG"
+	BRNE ring ; Kui on vхrdne ring-iga
+
+	POP r17 ; Loeb stackist juba uue vдljundi
+	POP r16 ; Loeb stackist juba uue vдljundi
+	RET
+
+
+delay_1ms: ; 2034
+	PUSH R21
+
+	LDI R21,250
+	tsykkel2: ; 10
+		NOP
+		NOP
+		NOP
+		NOP
+		NOP	
+		DEC R21
+	BRNE tsykkel2
+	
+	POP R21
+	RET ; Tagastab ьhe vхrra edasi aadressi ( CALL ) rida 117
+----------------------------------
+Kolmas praktikum
+
+Esimene ulesanne
+Timer
+1) Mida see teeb ?
+	Timer/Counter on selline seade, mis suudab lugeda pulsse
+	Juhul kui pulsse antakse protsessori sama sagedusel, siis T/C loeb aega ( Timer )
+	Timer/Countner hoiab endas väärtust, mida ta ( Taimerina kasutab ) suurendab mingi kontstantse ajavahemiku.
+2) Üldiselt mis funktsionaalsus taimeril on
+	Taimerid oskavad loetavad väärtust automaatselt võrrelde mingi etteantud numbriga
+	Saab seadistada "Output compare"..."OC" nii, et ta paneb mingi viiku kõrgeks/madalaks
+	Vaatab näiteks signaali aega
+3) Mis tööreziimid taimeril on
+	"Normal mode" - kõige lihtsam reziim, kogu aeg vaartust suurendatakse, ja counter ei "koristatakse"
+	Jõub tuksi, kui ta jõuab kõige ülemist 16-bit väärtust (MAX = 0xFFFF)
+	Pärast seda jõuab BOTTOM (0x0000).
+
+	"Clear Timer on Compare Match" (CTC) reziim
+	Kui "Timer" on jõudnud mingi etteantud väärtusele, siis ta viib Timeri asendisse BOTTOM
+	
+	"Fast PWM" mode -
+	"Phase correct PWM" mode -
+	"Phase and frequency correct PWM" mode - 
+4) Mida tuleb teha taimeri initsialiseerimiseks kõige lihtsama reziimi ?
+
+	LDI R17, 0b00000001
+	OUT TCCR0B, R17
+-------------------------------
+start:
+	LDI R16, 0xff
+	OUT SPL, R16  
+	LDI R16, 0x10
+	OUT SPH, R16
+	
+	LDI R17, 0b00000001
+	OUT TCCR0B, R17
+
+	infi_loop:
+	RJMP infi_loop
+
+	RJMP start
+--------------------------------
+Teine ülesanne
+
+start:
+	LDI R16, 0xff
+	OUT SPL, R16  
+	LDI R16, 0x10
+	OUT SPH, R16
+	
+	LDI R17, 0b00000001
+	OUT TCCR0B, R17
+
+Delay:
+	PUSH R16
+	PUSH R17
+
+	ring:
+		CALL delay_1ms
+		SUBI R16, 1
+		SBCI R17, 0
+	BRNE ring
+
+	POP r17
+	POP r16 
+	RET
+
+
+delay_1ms:
+	PUSH R21
+
+	LDI R21,250
+	tsykkel2: ; 10
+		NOP
+		NOP
+		NOP
+		NOP
+		NOP	
+		DEC R21
+	BRNE tsykkel2
+	
+	POP R21
+RET
+-------------------------------------------
+Teine
+
+; Replace with your application code
+start:
+	LDI R16, 0x00
+	OUT 0x01, R16	; DDRB
+	LDI R20, 0x08
+
+	Main_loop:
+		
+		LDI R17, 0x00	;viivis algas 1.
+	
+		
+		delay_loop:
+			LDI R18, 0x00
+			delay_loop2:
+				LDI R19, 0x00
+				delay_loop3:	
+					NOP
+					NOP
+					NOP
+					NOP
+					NOP
+					NOP
+					NOP
+					iNC R19
+					CPI R19, 255
+					BRNE delay_loop3
+			INC R18
+			CPI R18, 89
+			BRNE delay_loop2
+		INC R17				;3
+		CPI R17, 4		;2
+		BRNE delay_loop   ;kui tulemus polnud null, siis huppame, kui oli 0 - siis lahme edasi
+								
+							  ;for(i=0 on nagu 1  ;  i=255 on nagu 2 ;   i++ on nagu 3)	
+							  ;viivis loppes siin
+		
+		
+		OUT 0x01, R16 ; laen DDRA-le R16 registri vaartuse ehk 2^3
+		OUT 0x02, R16; laen PORTA-le DDRA vaartuse
+		EOR R16,R20
+
+		
+			
+			
+	RJMP Main_loop
+   
+
+---------------------------------------------------------
+Kolmas ülesanne
+
+start:
+	LDI R16, 0xff
+	OUT SPL, R16  
+	LDI R16, 0x10
+	OUT SPH, R16
+
+
+	CALL USART_Init
+	main_loop:
+		CALL USART_Transmit
+	RJMP main_loop
+
+USART_Init:
+	; Enable transmitter/ TX saatmis
+	LDI R16, 0b00001000 ; (1<<TXEN1)
+	STS UCSR1B , R16
+
+	LDI R17, 0x00000000
+	LDI R16, 12
+
+	; Set baud rate ( 9600 )
+	STS UBRR1H, R17
+	STS UBRR1L, R16
+	; Set Parity ( No parity ) Kõik on 0 niigi
+	; Set frame format: 8data, 1stop bit
+	LDI R16, 0b00000110
+	STS UCSR1C,R16
+RET
+
+USART_Transmit:
+	PUSH R23
+	PUSH R24
+			
+	LDI R24, 'b'
+	UART_Wait:	
+		LDS R23, UCSR1A ; Load direct from data space
+		;Wait for empty transmit buffer
+		SBRS R23, UDRE1 ; Skip, if Bit in Register is Set (((( SBRS ))))
+	RJMP UART_Wait
+	; Put data ( R24 ) into buffer, sends the data
+	STS UDR1, R24
+
+	POP R24
+	POP R23
+RET
+---------------------------------------------------------------
+Neljas ülesanne
+
+start:
+	LDI R16, 0xff
+	OUT SPL, R16  
+	LDI R16, 0x10
+	OUT SPH, R16
+
+
+	CALL USART_Init
+	main_loop:
+		LDI R24, 'V'
+		CALL USART_Transmit
+		LDI R24, 'l'
+		CALL USART_Transmit
+		LDI R24, 'a'
+		CALL USART_Transmit
+		LDI R24, 'd'
+		CALL USART_Transmit
+
+	RJMP main_loop
+
+USART_Init:
+	; Enable transmitter/ TX saatmis
+	LDI R16, 0b00001000 ; (1<<TXEN1)
+	STS UCSR1B , R16
+
+	LDI R17, 0x00000000
+	LDI R16, 12
+
+	; Set baud rate ( 9600 )
+	STS UBRR1H, R17
+	STS UBRR1L, R16
+	; Set Parity ( No parity ) Kõik on 0 niigi
+	; Set frame format: 8data, 1stop bit
+	LDI R16, 0b00000110
+	STS UCSR1C,R16
+RET
+
+USART_Transmit:
+	PUSH R23
+	PUSH R24
+			
+	UART_Wait:	
+		LDS R23, UCSR1A ; Load direct from data space
+		;Wait for empty transmit buffer
+		SBRS R23, UDRE1 ; Skip, if Bit in Register is Set (((( SBRS ))))
+	RJMP UART_Wait
+	; Put data ( R24 ) into buffer, sends the data
+	STS UDR1, R24
+
+	POP R24
+	POP R23
+RET
+------------------------------------------------
+Neljas Praktikum
+
+Esimene Ülesanne
+
+start:
+	LDI R16, 0xff
+	OUT SPL, R16  
+	LDI R16, 0x10
+	OUT SPH, R16
+
+
+	CALL USART_Init
+	main_loop:
+		LDI R24, '0'
+		CALL USART_Transmit
+		LDI R24, '1'
+		CALL USART_Transmit
+		LDI R24, '2'
+		CALL USART_Transmit
+		LDI R24, '3'
+		CALL USART_Transmit
+		LDI R24, '4'
+		CALL USART_Transmit
+	RJMP main_loop
+
+USART_Init:
+	; Enable transmitter/ TX saatmis
+	LDI R16, 0b00001000 ; (1<<TXEN1)
+	STS UCSR1B , R16
+
+	LDI R17, 0x00000000
+	LDI R16, 12
+
+	; Set baud rate ( 9600 )
+	STS UBRR1H, R17
+	STS UBRR1L, R16
+	; Set Parity ( No parity ) Kõik on 0 niigi
+	; Set frame format: 8data, 1stop bit
+	LDI R16, 0b00000110
+	STS UCSR1C,R16
+RET
+
+USART_Transmit:
+	PUSH R23
+	PUSH R24
+			
+	LDI R24, 'b'
+	UART_Wait:	
+		LDS R23, UCSR1A ; Load direct from data space
+		;Wait for empty transmit buffer
+		SBRS R23, UDRE1 ; Skip, if Bit in Register is Set (((( SBRS ))))
+	RJMP UART_Wait
+	; Put data ( R24 ) into buffer, sends the data
+	STS UDR1, R24
+
+	POP R24
+	POP R23
+RET
+
+
+
+
+
+
