@@ -1,5 +1,9 @@
+// Kirjutame registrisse (R16) väärtuse (0b00001000)
 LDI R16, 0b00001000
+// Kirjutame portidele väärtuse, mis on olemas registris
 OUT DDRA, R16
 OUT PORTA, R16
+// Teeme funktsiooni
 infi_loop:
+// Hüppame tagasi funktsiooni peale
 RJMP infi_loop
